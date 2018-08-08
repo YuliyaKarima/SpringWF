@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="pizza.Customer" table="customer">
+		<meta attribute="class-description">
+			This class contains the Customer details.
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>	
+			<property name="name" column="name" type="string" />
+			<property name="address" column="address" type="string" />
+			<property name="city" column="city" type="string" />
+			<property name="state" column="state" type="string" />
+			<property name="zipCode" column="zipCode" type="string" />
+			<property name="phoneNumber" column="phoneNumber" type="string" />	
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,84 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                    http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+	<var name="customer" class="pizza.Customer" />	
+
+	<view-state id="welcome">
+	    <on-entry>
+			<evaluate expression="pizzaFlowActions.twitterSettings()" result="viewScope.twitter_url" />
+			<evaluate expression="pizzaFlowActions.facebookSettings()" result="viewScope.facebook_url" />
+			<evaluate expression="pizzaFlowActions.twitterUser()" result="viewScope.twitter_user" />
+		</on-entry>
+		<transition on="order" to="lookupCustomerOrder" />
+		<transition on="booking" to="lookupCustomerBook" />
+		<transition on="find" to="find" />
+	</view-state>
+
+	<action-state id="lookupCustomerOrder">
+		<evaluate result="customer" expression="pizzaFlowActions.lookupCustomer(requestParameters.phoneNumber)" />
+		<transition to="registrationFormOrder" on-exception="pizza.CustomerNotFoundException" />
+		<transition to="customerReady" />
+	</action-state>
+
+	<action-state id="lookupCustomerBook">
+		<evaluate result="customer" expression="pizzaFlowActions.lookupCustomer(requestParameters.phoneNumber)" />
+		<transition to="registrationFormBook" on-exception="pizza.CustomerNotFoundException" />
+		<transition to="toBookTable" />
+	</action-state>
+
+	<view-state id="registrationFormOrder" view="registrationForm.jspx" model="customer">
+		<on-entry>
+			<evaluate expression="customer.setPhoneNumber(requestParameters.phoneNumber)" />
+		</on-entry>
+		<transition on="submit" to="checkDeliveryArea" />
+	</view-state>	
+	
+	<view-state id="find" view="find.jspx">
+		<on-entry>
+			<evaluate expression="pizzaFlowActions.find(requestParameters.find)" result = "viewScope.finded"/>
+		</on-entry>
+		<transition on="submit" to="checkDeliveryArea" />
+	</view-state>
+	
+	<view-state id="registrationFormBook" view="registrationForm.jspx" model="customer">
+		<on-entry>
+			<evaluate expression="customer.setPhoneNumber(requestParameters.phoneNumber)" />
+		</on-entry>
+		<transition on="submit" to="addCustomerBook" />
+	</view-state>
+
+	<decision-state id="checkDeliveryArea">
+		<if test="pizzaFlowActions.checkDeliveryArea(customer.zipCode)"
+			then="addCustomer" else="deliveryWarning" />
+	</decision-state>
+
+	<view-state id="deliveryWarning">
+		<transition on="accept" to="addCustomer" />
+	</view-state>
+
+	<action-state id="addCustomer">
+		<evaluate expression="pizzaFlowActions.addCustomer(customer)" />
+		<transition to="customerReady" />
+	</action-state>
+	
+	<action-state id="addCustomerBook">
+		<evaluate expression="pizzaFlowActions.addCustomer(customer)" />
+		<transition to="toBookTable" />
+	</action-state>
+
+	<end-state id="toBookTable">	
+		<output name="customer" />
+	</end-state>
+
+	<end-state id="cancel" />
+
+	<end-state id="customerReady">
+		<output name="customer" />
+	</end-state>
+
+	<global-transitions>
+		<transition on="cancel" to="cancel" />
+	</global-transitions>
+</flow>

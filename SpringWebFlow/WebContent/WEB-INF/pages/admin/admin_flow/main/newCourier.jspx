@@ -1,0 +1,54 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+<jsp:output omit-xml-declaration="yes" />
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+<head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/structure.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/reset.css" type="text/css" />
+<title>Admin page - add new Courier</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"><jsp:text /></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".add").click(function(e){
+    	 e.preventDefault();
+         var $self = $(this);
+         $self.before($self.prev('div').clone());
+    });  
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+    $(".delete" ).click(function(e) {
+    	e.preventDefault();
+    	 var $self = $(this).prev();
+    	 $self.prev().remove();		
+	});
+});
+</script>
+</head>
+<body>
+<form:form commandName="courier" >
+<input type="hidden" name="_flowExecutionKey" value="${flowExecutionKey}" />
+	    <b>Name </b>
+		<form:input path="name" placeholder="Name" required="true"/>
+		<br />
+		 <b>Category </b>
+		 <form:select path="category" placeholder="Category" required="true">
+		 <form:option value = "1">1</form:option>
+		 <form:option value = "2">2</form:option>
+		 <form:option value = "3">3</form:option>
+		 <form:option value = "4">4</form:option>
+		 </form:select>		
+		<br />
+		 <b>Experience, years </b>
+		<form:input path="experience" placeholder="Experience" required="true"/>
+		<br />
+		  <br />
+		  <input type="submit" class="btnLogin" name="_eventId_save" value="Add Courier" /> 
+	      <input type="submit" class="btnLogin" name="_eventId_cancel" value="Cancel" />
+</form:form>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/structure.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/reset.css" type="text/css" />
+
+<jsp:output omit-xml-declaration="yes" />
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+
+<head>
+<title>Spizza - Customer Registration</title>
+</head>
+
+<body>
+	<form:form commandName="customer" class="box login">
+		<input type="hidden" name="_flowExecutionKey" value="${flowExecutionKey}" />
+		<fieldset class="boxBody">
+		<b>Phone number: </b>
+		<form:input path="phoneNumber" placeholder="Phone number" required="true"/>
+		<br />
+		<b>Name: </b>
+		<form:input path="name" placeholder="Name" required="true" />
+		<br />
+		<b>Address: </b>
+		<form:input path="address" placeholder="Address" required="true"/>
+		<br />
+		<b>City: </b>
+		<form:input path="city" placeholder="City" required="true"/>
+		<br />
+		<b>State: </b>
+		<form:input path="state" placeholder="State" required="true"/>
+		<br />
+		<b>Zip Code: </b>
+		<form:input path="zipCode" placeholder="Zip code" required="true"/>
+		<br />
+		<input type="submit" class="btnLogin" name="_eventId_submit" value="Submit" />
+		<input type="submit" class="btnLogin" name="_eventId_cancel" value="Cancel" />
+		</fieldset>
+	</form:form>
+</body>
+</html>

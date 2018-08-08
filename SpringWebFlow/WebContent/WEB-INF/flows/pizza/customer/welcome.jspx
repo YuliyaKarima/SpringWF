@@ -1,0 +1,103 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/structure.css" type="text/css" />
+
+<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" ><jsp:text /></link>
+<script type="text/javascript" src="/webjars/jquery/jquery.min.js"><jsp:text /></script>
+<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"><jsp:text /></script>
+<script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"><jsp:text /></script>
+<script type="text/javascript">
+          $.ajaxSetup({
+            beforeSend : function(xhr, settings) {
+              if (settings.type == 'POST' || settings.type == 'PUT'
+                  || settings.type == 'DELETE') {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/
+                    .test(settings.url))) {
+                  // Only send the token to relative URLs i.e. locally.
+                  xhr.setRequestHeader("X-XSRF-TOKEN", Cookies
+                      .get('XSRF-TOKEN'));
+                }
+              }
+            }
+          });             
+         
+          $(document).ready(function() {
+        	  if($('twitter_user').text().length !== 0){
+        		  $(".unauthenticated").hide();
+                  $(".authenticated").show();   
+        	  }      
+        	});
+          
+          $.get("/user", function(data) {
+            $("#user").html(data.name);
+           if($('twitter_user').text().length !== 0){
+          	  $(".unauthenticated").hide();
+              $(".authenticated").show();           
+            } 
+            $(".unauthenticated").hide();
+            $(".authenticated").show();
+          });
+          
+          var logout = function() {
+            $.post("/logout", function() {
+              $("#user").html('');
+              $(".unauthenticated").show();
+              $(".authenticated").hide();
+            })
+            return true;
+          }
+        </script>
+<jsp:output omit-xml-declaration="yes" />
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+
+<head>
+<title>Spizza</title>
+</head>
+<body
+	background="${pageContext.request.contextPath}/resources/backstage.jpg">
+
+	<form:form class="box login">
+		<h1>Welcome to Pizza Store!</h1>
+		<input type="hidden" name="_flowExecutionKey" value="${flowExecutionKey}" />
+		<fieldset class="boxBody">
+			<label>Enter your phone number or login:</label> 
+			<input type="text" name="phoneNumber" placeholder="Phone number or login" required="true" /> 
+			<br />
+			
+			<div class="container authenticated" id="authenticated" style="display:none">
+                 Logged in as: <span id="user"></span>
+            <button onClick="logout()" class="btn btn-primary">Logout</button>        
+            </div> 
+            
+            <b><span id="twitter_user">${twitter_user}</span></b> <br />    
+            <button onClick="logout()" class="btn btn-primary">Logout</button> 
+                 
+			<div class="container unauthenticated" id="unauthenticated">  
+			<label>Or enter with:</label> 
+			</div>
+			
+			<a href="http://localhost:8080/login/github"> <img src="${pageContext.request.contextPath}/resources/github.png" alt="Login with Github"></img></a> 
+			<a href="/login/github"> <img src="${pageContext.request.contextPath}/resources/github.png" alt="Login with Github"></img></a> 
+            <a href="http://localhost:8080/login/vk"> <img src="${pageContext.request.contextPath}/resources/vk.png"	alt="Login with VK"></img></a> 
+            <a href="http://localhost:8080/login/google"> <img src="${pageContext.request.contextPath}/resources/google.png"	alt="Login with Google"></img></a> 
+            <a href="${twitter_url}"> <img src="${pageContext.request.contextPath}/resources/twitter.png" alt="Login with Twitter"></img></a>
+            <a href="http://localhost:8080/login/infacebook"> <img src="${pageContext.request.contextPath}/resources/facebook.png" alt="Login with Facebook"></img></a>             
+			<a href="${facebook_url}"> <img	src="${pageContext.request.contextPath}/resources/facebook.png"	alt="Login with Facebook"></img></a>
+			<a href="./getToken"> <img	src="${pageContext.request.contextPath}/resources/facebook.png"	alt="Login with Facebook"></img></a>  
+				
+			<input type="submit" class="btnLogin" name="_eventId_order" value="Go for Pizza!" /> 
+			<input type="submit" class="btnLogin" name="_eventId_booking" value="Book a table!" /> 
+		</fieldset>
+
+		<label>Search for pizza:</label>
+		<input type="text" placeholder="Type a hint here" name="find" />
+		
+		<input type="submit" class="btnLogin" name="_eventId_find" value="Find" />
+
+
+	</form:form>
+</body>
+</html>

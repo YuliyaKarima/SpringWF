@@ -1,0 +1,23 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+<jsp:output omit-xml-declaration="yes" />
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+<head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/structure.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/reset.css" type="text/css" />
+<title>Admin page - cook</title>
+</head>
+<body>
+	<form:form class="box login">
+	<input type="hidden" name="_flowExecutionKey" value="${flowExecutionKey}" />
+	<fieldset class="boxBody">  
+		<input type="submit" class="btnLogin" name="_eventId_pizzaBookings" value="Pizzas for bookings" />
+		<input type="submit" class="btnLogin" name="_eventId_pizzaDeliveries" value="Pizzas for deliveries" />
+		<input type="submit" class="btnLogin" name="_eventId_cancel" value="Cancel" />
+    </fieldset>	
+	</form:form>
+</body>
+</html>

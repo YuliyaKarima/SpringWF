@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+  http://www.springframework.org/schema/webflow/spring-webflow.xsd">	
+	
+    <subflow-state id="mainPage" subflow="mainFlow">       
+		<transition on="cancel" to="endState"/>	
+		<transition on="bookingsConfirmed" to="cookPage"/>	
+		<transition on="deliveriesConfirmed" to="cookPage"/>		
+	</subflow-state>
+
+  <subflow-state id="cookPage" subflow="pizzaToCook">	
+     <input name="orders" value="flowScope.ordersWrapper" />
+		<transition on="cancel" to="endState"/>				
+	</subflow-state> 
+	
+	<end-state id="endState" />
+
+	<global-transitions>
+		<transition on="cancel" to="endState" />
+	</global-transitions>
+</flow>

@@ -1,0 +1,62 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+<jsp:output omit-xml-declaration="yes" />
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+<head>
+<title>New bookings</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/structure.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/reset.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/table_booking.css" type="text/css" />
+<link href='https://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'/>
+</head>
+
+<body>
+
+<form:form commandName="bookingsWrapper">
+<input type="hidden" name="_flowExecutionKey" value="${flowExecutionKey}" />
+
+<table>
+<caption>New bookings</caption>
+<thead>
+<tr>
+    <th scope="col">Date of booking</th>
+    <th scope="col">№ of table</th>
+    <th scope="col">Customer's name</th>
+    <th scope="col">Payment amount</th>
+    <th scope="col">Booking status</th>
+</tr>
+</thead>
+  
+<tbody>
+<c:forEach items="${bookingsWrapper.bookingList}" var="booking" varStatus="i">  
+<tr>
+<td align="center"> ${booking.getDateFor()}</td>
+<td align="center"> ${booking.getTable().getId()}</td>
+<td align="center"> ${booking.getCustomer().getName()}</td>
+<td align="center"> ${booking.getPayment().getAmount()}</td>
+<td align="center">
+<form:select path="bookingList[${i.index}].isConfirmed">
+     <form:option value="true" label="Confirm" />
+     <form:option value="false" label="Cancel" />
+</form:select>
+</td>
+</tr>
+</c:forEach>
+</tbody>
+
+</table>
+
+<br></br>
+<br></br>
+<br></br>
+
+ <input type="submit" class="btnLogin" name="_eventId_confirmed" value="Confirm" />		
+ <input type="submit" class="btnLogin" name="_eventId_cancel" value="Cancel" />
+		
+</form:form>
+	
+</body>
+</html>

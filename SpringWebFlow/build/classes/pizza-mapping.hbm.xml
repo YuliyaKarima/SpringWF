@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="pizza.Pizza" table="pizza_associassion">
+		<meta attribute="class-description">
+			This class contains the Pizza details.
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="pizzaType" column="name_id" unique="true"
+			class="pizza.PizzaType" not-null="true">
+		</many-to-one>
+		<many-to-one name="size" column="size_id" unique="true"
+			class="pizza.PizzaSize" not-null="true">
+		</many-to-one>
+		<set name="toppings" cascade ="all" table="pizza_toppings">
+			<key column="pizza_id"></key>
+			<many-to-many column="topping_id" class="pizza.PizzaToppings"></many-to-many>
+		</set>
+		<property name="status" column="status" type="string" />
+		<property name="dateToBeCooked" column="dateToBeCooked"/>
+	</class>
+
+	<class name="pizza.PizzaToppings" table="topping">
+		<meta attribute="class-description">
+			This class contains the Toppings details.
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<property name="name" column="name" type="string" />
+	</class>
+
+	<class name="pizza.PizzaType" table="pizza_name">
+		<meta attribute="class-description">
+			This class contains the pizza names.
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<property name="name" column="name" type="string" />
+	
+	   <map name="ingredientsValue" lazy="false" cascade="all" table="pizzatype_ingredients"> 
+        <key column="pizzatype_id"/> 
+        <index-many-to-many column="ingredient_id" class="ingredient.Ingredient"/> 
+        <element type="double" column="value" not-null="true"/>        
+       </map>
+		
+	</class>
+
+	<class name="pizza.PizzaSize" table="pizza_size">
+		<meta attribute="class-description">
+			This class contains the pizza names.
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<property name="size" column="size" type="string" />
+	</class>
+
+</hibernate-mapping>

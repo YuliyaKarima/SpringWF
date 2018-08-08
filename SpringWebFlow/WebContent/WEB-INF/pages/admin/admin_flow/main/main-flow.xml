@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                    http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+    <view-state id="main">     	
+        <transition on="newBookings" to="bookingList"/>
+        <transition on="newDeliveries" to="deliveryList"/>
+        <transition on="pizzaBookingsCooking" to="cookBookingsProcess"/>
+        <transition on="pizzaDeliveryCooking" to="cookDeliveryProcess"/>
+        <transition on="ingredients" to="ingredients"/>
+        <transition on="changeIngredients" to="changeIngredients"/>
+        <transition on="newPizzaType" to="newPizzaType"/>
+        <transition on="newCooker" to="newCooker"/>
+        <transition on="newCourier" to="newCourier"/>
+		<transition on="cancel" to="cancel" />
+	</view-state>
+
+	<view-state id="bookingList" model="flowScope.bookingsWrapper">	
+     	<on-entry>
+         	<set name="flowScope.bookingsWrapper" value="pizzaFlowActions.getNewBookings()" />		
+		</on-entry>			
+        <transition on="confirmed" to="bookingsConfirmed">
+         <evaluate expression="pizzaFlowActions.updateBookings(flowScope.bookingsWrapper)"/>		
+		</transition>	
+		<transition on="cancel" to="cancel" />
+	</view-state>
+
+	<view-state id="deliveryList" model="flowScope.deliveriesWrapper">	
+     	<on-entry>
+         	<set name="flowScope.deliveriesWrapper" value="pizzaFlowActions.getNewDeliveries()" />
+			<evaluate expression="pizzaFlowActions.getExpressList()" result="flowScope.freeExpress" />
+		</on-entry>			
+        <transition on="confirmed" to="deliveriesConfirmed">
+         <evaluate expression="pizzaFlowActions.updateDeliveries(flowScope.deliveriesWrapper, flowScope.freeExpress)"/>		
+		</transition>	
+		<transition on="cancel" to="cancel" />
+	</view-state>
+
+   <view-state id="cookBookingsProcess">	
+     	<on-entry>			
+			<evaluate expression="pizzaFlowActions.getCookingPizzasBookings()" result="viewScope.pizzas" />			
+		</on-entry>			
+        <transition on="cooked" to="cookBookingsProcess">
+			<evaluate expression="pizzaFlowActions.cooked(requestParameters.cooked_pizzas)" />		
+		</transition>			
+		<transition on="cancel" to="main" />
+	</view-state>
+	
+	<view-state id="cookDeliveryProcess">	
+     	<on-entry>			
+			<evaluate expression="pizzaFlowActions.getCookingPizzasDelivery()" result="viewScope.pizzas" />			
+		</on-entry>			
+        <transition on="deliver" to="cookDeliveryProcess">
+			<evaluate expression="pizzaFlowActions.cooked(requestParameters.cooked_pizzas)" />		
+		</transition>			
+		<transition on="cancel" to="main" />
+	</view-state>
+	
+	<view-state id="newPizzaType">	
+     	<on-entry>	     	  
+     	    <evaluate expression="pizzaFlowActions.ingredients()" result="viewScope.ingredients"/>				
+		</on-entry>			
+        <transition on="save" to="main">
+			<evaluate expression="pizzaFlowActions.newPizzaType(requestParameters.name, requestParameters.ingredient, requestParameters.value, viewScope.ingredients, requestParameters.file)" />		
+		</transition>		
+	</view-state>
+	
+	<view-state id="newCooker" model="flowScope.cooker">	
+     	<on-entry>	     	  
+     	    <set name="flowScope.cooker" value="new cook.Cooker()" />				
+		</on-entry>			
+        <transition on="save" to="main">
+			<evaluate expression="pizzaFlowActions.saveCooker(flowScope.cooker)" />		
+		</transition>		
+	</view-state>
+	
+	<view-state id="newCourier" model="flowScope.courier">	
+     	<on-entry>	     	  
+     	   <set name="flowScope.courier" value="new pizza.Express()" />				
+		</on-entry>			
+        <transition on="save" to="main">
+			<evaluate expression="pizzaFlowActions.saveCourier(flowScope.courier)" />		
+		</transition>		
+	</view-state>
+	
+	<view-state id="ingredients">	
+     	<on-entry>	     	  
+     	    <evaluate expression="pizzaFlowActions.ingredients()" result="viewScope.ingredients"/>				
+		</on-entry>			
+		<transition on="save" to="main"/>	
+        	
+	</view-state>
+	
+	<view-state id="changeIngredients">	
+     	<on-entry>	     	  
+     	    <evaluate expression="pizzaFlowActions.ingredients()" result="viewScope.ingredients"/>				
+		</on-entry>			
+       <transition on="save" to="main">	
+        <evaluate expression="pizzaFlowActions.changeIngredientsCost(viewScope.ingredients, requestParameters.new_cost)" />	
+        </transition>		
+	</view-state>	
+	<end-state id="cancel" />
+
+    <end-state id="bookingsConfirmed" >   
+    </end-state>
+    
+    <end-state id="deliveriesConfirmed" >   
+    </end-state>
+     
+    <global-transitions>
+		<transition on="cancel" to="cancel" />
+	</global-transitions>
+</flow>

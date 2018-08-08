@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:flow="http://www.springframework.org/schema/webflow-config"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow-config 
+   http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd
+   http://www.springframework.org/schema/beans 
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/context 
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:component-scan base-package="flow" />
+
+	<!-- Executes flows: the entry point into the Spring Web Flow system -->
+	
+	<flow:flow-executor id="flowExecutor" flow-registry="flowRegistry" />
+
+	<!-- The registry of executable flow definitions -->
+	
+	<flow:flow-registry id="flowRegistry"
+		flow-builder-services="flowBuilderServices">
+		<flow:flow-location id="pizzaFlow"
+			path="/WEB-INF/flows/pizza/pizza-flow.xml" />
+		<flow:flow-location id="orderFlow"
+			path="/WEB-INF/flows/pizza/order/order-flow.xml" />
+		<flow:flow-location id="customerFlow"
+			path="/WEB-INF/flows/pizza/customer/customer-flow.xml" />
+		<flow:flow-location id="paymentFlow"
+			path="/WEB-INF/flows/pizza/payment/payment-flow.xml" />
+		<flow:flow-location id="bookTable"
+			path="/WEB-INF/flows/pizza/book/book-flow.xml" />
+		<flow:flow-location id="adminFlow"
+			path="/WEB-INF/pages/admin/admin_flow/admin-flow.xml" />
+		<flow:flow-location id="mainFlow"
+			path="/WEB-INF/pages/admin/admin_flow/main/main-flow.xml" />		
+		<flow:flow-location id="cookerFlow"
+			path="/WEB-INF/pages/cooker/cooker_flow/cooker-flow.xml" />
+		<flow:flow-location id="mainCookerFlow"
+			path="/WEB-INF/pages/cooker/cooker_flow/main/main-flow.xml" />
+		<flow:flow-location id="pizzaToCook"
+			path="/WEB-INF/pages/admin/admin_flow/cook/cook-pizza-flow.xml" />				
+	</flow:flow-registry>
+
+	<flow:flow-builder-services id="flowBuilderServices"
+		view-factory-creator="mvcViewFactoryCreator" />
+	
+		<bean id="mvcViewFactoryCreator"
+		class="org.springframework.webflow.mvc.builder.MvcViewFactoryCreator">
+		<property name="defaultViewSuffix" value=".jspx" />
+	</bean>
+	
+	<!--Maps request paths to flows in the flowRegistry -->
+	
+	<bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+		<property name="flowRegistry" ref="flowRegistry" />
+	</bean>
+	
+	<!-- Dispatches requests mapped to flows to FlowHandler implementations -->
+	
+	<bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
+		<property name="flowExecutor" ref="flowExecutor" />
+	</bean>	
+
+</beans>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+  http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+	
+    <subflow-state id="mainPage" subflow="mainCookerFlow">
+		<output name="customer" value="flowCustomer" />
+		<transition on="customerReady" to="buildOrder">
+			<evaluate expression="order.setOrder(new pizza.Delivery())" />
+		</transition>
+		<transition on="toCheckOrders" to="checkOrders">
+			<evaluate expression="order.setOrder(new pizza.Bookings())" />
+		</transition>
+	</subflow-state>
+
+	<subflow-state id="checkOrders" subflow="orderFlow">
+		<output name="customer" value="flowCustomer" />
+		<transition on="customerReady" to="buildOrder">
+			<evaluate expression="order.setOrder(new pizza.Delivery())" />
+		</transition>
+		<transition on="toBookTable" to="bookTable">
+			<evaluate expression="order.setOrder(new pizza.Bookings())" />
+		</transition>
+	</subflow-state>
+
+	<subflow-state id="bookTable" subflow="bookTable">
+		<on-entry>
+			<evaluate expression="order.order.setCustomer(flowCustomer)" />
+		</on-entry>
+		<input name="order" value="order.order" />
+		<transition on="bookedToOrder" to="buildOrder" />
+		<transition on="booked" to="endState" />
+	</subflow-state>
+
+	<subflow-state id="buildOrder" subflow="orderFlow">
+		<on-entry>
+			<evaluate expression="order.order.setCustomer(flowCustomer)" />
+		</on-entry>
+		<input name="order" value="order.order" />
+		<transition on="orderCreated" to="takePayment" />
+	</subflow-state>
+
+	<subflow-state id="takePayment" subflow="paymentFlow">
+		<input name="order" value="order.order" />
+		<transition on="paymentTaken" to="saveOrder" />
+	</subflow-state>
+
+	<action-state id="saveOrder">
+		<evaluate
+			expression="pizzaFlowActions.saveOrder(order.order)" />
+		<transition to="thankCustomer" />
+	</action-state>
+
+	<view-state id="thankCustomer">
+		<transition to="endState" />
+	</view-state>
+
+	<end-state id="endState" />
+
+	<global-transitions>
+		<transition on="cancel" to="endState" />
+	</global-transitions>
+</flow>

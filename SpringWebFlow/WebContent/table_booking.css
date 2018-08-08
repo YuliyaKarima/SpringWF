@@ -1,0 +1,49 @@
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border: 3px solid purple;
+}
+
+thead, tbody th:nth-child(1) {
+  width: 30%;
+}
+
+thead, tbody th:nth-child(2) {
+  width: 15%;
+}
+
+thead, tbody th:nth-child(3) {
+  width: 15%;
+}
+
+thead, tbody th:nth-child(4) {
+  width: 20%;
+}
+
+thead, tbody th:nth-child(5) {
+  width: 20%;
+} 
+
+th, td {
+  padding: 20px;
+}
+
+html {
+  font-family: 'helvetica neue', helvetica, arial, sans-serif;
+}
+
+thead th, tfoot th {
+  font-family: 'Rock Salt', cursive;
+}
+
+th {
+  letter-spacing: 2px;
+}
+
+td {
+  letter-spacing: 1px;
+}
+td {
+  text-align: right;
+}

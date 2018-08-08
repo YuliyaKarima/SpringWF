@@ -1,0 +1,57 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+<jsp:output omit-xml-declaration="yes" />
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+<head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/structure.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/reset.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/table_ingredients.css" type="text/css" />
+<title>Admin page</title>
+</head>
+<body>
+	<form:form class="box login">
+		<input type="hidden" name="_flowExecutionKey"
+			value="${flowExecutionKey}" />
+		<fieldset class="boxBody">
+			<table>
+				<caption>Cooking pizzas</caption>
+				<thead>
+					<tr>
+						<th scope="col">Product</th>
+						<th scope="col">Country</th>
+						<th scope="col">Cost, $</th>
+						<th scope="col">Best before</th>
+						<th scope="col">Stock Value</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<c:forEach items="${ingredients}" var="ingredient">
+						<tr>
+							<td align="center">${ingredient.getType().getName()}</td>
+							<td align="center">${ingredient.getCountry()}</td>
+							<td align="center">${ingredient.getCost()}</td>
+							<c:if test="${ingredient.isBestDate()==true}">
+							<td align="center" bgcolor="#FF0000">${ingredient.getDateOfProduction().plusDays(ingredient.getShelfLife())}</td>
+							</c:if>
+							<c:if test="${ingredient.isBestDate()==false}">
+							<td align="center" bgcolor="#619947">${ingredient.getDateOfProduction().plusDays(ingredient.getShelfLife())}</td>
+							</c:if>
+							<c:if test="${ingredient.getStockValue() &lt; 20}">
+								<td align="center" bgcolor="#FF0000">${ingredient.getStockValue()}</td>
+							</c:if>
+							<c:if test="${ingredient.getStockValue() &gt; 20}">
+								<td align="center" bgcolor="#619947">${ingredient.getStockValue()}</td>
+							</c:if>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+
+		</fieldset>
+	</form:form>
+</body>
+</html>

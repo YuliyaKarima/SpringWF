@@ -1,0 +1,178 @@
+<div xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+
+	<jsp:output omit-xml-declaration="yes" />
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	
+    <link rel="stylesheet"	href="${pageContext.request.contextPath}/resources/radiobutton.css" type="text/css" />
+    <link rel="stylesheet"	href="${pageContext.request.contextPath}/resources/detail_info.css" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"><jsp:text /></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"><jsp:text /></script>
+  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>  
+    <style>
+    
+    .btn-primary {  
+    background-color: #b73333;  
+    }
+    
+    .col-md-2{   
+    padding-right: 0;
+    padding-left: 0;
+    float: none;
+    width: 50%;
+    }
+   
+    .btn-primary:hover {
+    color: #fff;
+    background-color: #902828;
+    border-color: #742020;
+    }    
+    
+    .btn-primary {   
+    border-color: #a42e2e;
+    border: 0px transparent; */
+    }
+    
+    label.btn.btn-primary:active {
+    background-color: #b73333;
+    border-color: #a42e2e;    
+     }
+
+    .btn {    
+    padding: 0px 0px;
+    }
+    
+    .img-thumbnail {
+   
+    border: 0px;
+    border-radius: 0px;
+   }
+   
+  .details {
+  width: 200px;
+  color: white;
+  background-color: #b73333;
+  border: solid 1px black; 
+  border-radius: 8px;
+}
+.check
+{
+    opacity:0.8;
+	color:#000000;
+	width: 600px;
+	
+}
+
+.unchecked
+{   
+	width: 300px;
+	
+}
+.box{
+    margin-bottom:5px;
+}
+   
+    </style>   
+    
+    <script type="text/javascript">
+    $(document).ready(function(e){
+		$('.img-check').click(function(e) {
+		 if ( $( this ).hasClass( "check" ) ) {
+ $(this).addClass('unchecked').removeClass('check').siblings('input').prop('checked',true); 
+    }else{
+    $('.img-check').not(this).removeClass('check').addClass('unchecked')
+		.siblings('input').prop('checked',false);
+	$(this).addClass('check').removeClass('unchecked').siblings('input').prop('checked',true);
+    }
+		});
+});
+    </script>
+   
+    <script>
+	 angular.module('App', [])
+            .factory('typeFactory', [function() {
+               var jsonString = ${json};
+               console.log(jsonString);
+                return function() {                
+                    // use fromJson to convert a JSON string to an object https://docs.angularjs.org/api/ng/function/angular.fromJson
+                    return angular.fromJson(jsonString);
+                }; 
+            }])
+            .factory('types', [function() {                
+                var jsonTypes = ${pizza_types};  
+                console.log(jsonTypes);
+                 return function() {                
+                     // use fromJson to convert a JSON string to an object https://docs.angularjs.org/api/ng/function/angular.fromJson
+                     return angular.fromJson(jsonTypes);
+                 }; 
+             }])
+			 .controller('typesController', ['$scope', 'typeFactory', 'types', function($scope,typeFactory, types) {
+				$scope.types=typeFactory();
+				$scope.selIdx= -1;
+				$scope.pizza_types = types();
+				$scope.selected_type = null;
+
+				$scope.selType=function(type,idx){
+				if($scope.isSelType(type)==false){
+				$scope.selectedType=type;
+				$scope.selIdx=idx;
+				$scope.selected_type = $scope.pizza_types[idx];
+				}
+				else{	
+				$scope.selectedType=null;			
+				$scope.selIdx=-1;
+				$scope.selected_type = null;
+				}									
+				}
+
+				$scope.isSelType=function(type){
+				return $scope.selectedType===type;
+				}
+			}]);
+</script>     
+	<h2>Create Pizza</h2>
+	<form:form commandName="pizza" class="box login">
+
+		<br></br>		
+		<b>Choose pizza type: </b>
+	<table ng-app="App" ng-controller="typesController">	
+	<tbody ng-repeat="type in pizza_types" ng-switch="isSelType(type)" ng-click="selType(type,$index)">
+		<tr ng-class="{sel:selIdx==$index}">
+		
+			<td>			
+            <img ng-src="http://localhost:8080/SpringWebFlow/resources/{{type.name}}.jpg" alt="{{type.name}}" class="img-thumbnail img-check"/>            
+			<input type="radio" name="pizza_type" label="{{type.name}}" value="{{type.id}}" class="hidden"/>
+			</td>
+			
+			<td ng-switch-when="true">
+			<div style="width:300px;height:300px" class="details">
+			<p>{{type.name}}</p>
+			<p><b>Ingredients:</b></p>			
+			<div ng-repeat="(key, value) in selected_type.ingredientsValue">
+			* {{key}}
+			</div>
+			<p>Nutritional value:</p>	
+			{{selected_type.nutritionInfo}}			
+			</div>			
+			</td>	
+			
+		</tr>		
+	</tbody>
+     </table>
+        <fieldset>	
+			
+		<br></br>
+		<b>Choose pizza size: </b>
+		<br></br>
+		<form:radiobuttons path="size" items="${sizeList}" delimiter="&lt;br/&gt;" />
+		<br></br>	
+		<b>Choose additional toppings: </b>		
+		<br></br>
+		<form:checkboxes path="toppings" items="${toppingsList}" delimiter="&lt;br/&gt;" />
+		</fieldset>		
+		<input type="submit" class="btnLogin"  name="_eventId_addPizza"	value="Continue" />
+		<input type="submit" class="btnLogin"  name="_eventId_cancel" value="Cancel" />
+	</form:form>
+</div>

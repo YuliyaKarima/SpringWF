@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+  http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+	<input name="order" required="true" />
+
+	<view-state id="showOrder">
+		<transition on="createPizza" to="createPizza" />
+		<transition on="checkout" to="checkDelivery" />
+		<transition on="cancel" to="cancel" />
+	</view-state>
+
+	<view-state id="createPizza" model="flowScope.pizza">
+		<on-entry>
+			<set name="flowScope.pizza" value="new pizza.Pizza()" />
+			<evaluate result="viewScope.toppingsList" expression="T(pizza.Topping).asList()" />
+			<evaluate result="viewScope.sizeList" expression="T(pizza.Sizes).asList()" />
+			<evaluate result="viewScope.typeList" expression="pizzaFlowActions.pizzaTypes()" />
+			<evaluate result="viewScope.json" expression="pizzaFlowActions.toJson(viewScope.typeList)"/>
+			<evaluate result="viewScope.pizza_types" expression="pizzaFlowActions.toJsonTypes()"/>
+		</on-entry>
+		<transition on="addPizza" to="showOrder">				
+			<evaluate expression="pizzaFlowActions.savePizza(order, requestParameters.pizza_type, flowScope.pizza)" />	
+			<evaluate result="flowScope.currentSum" expression="pizzaFlowActions.countSum(order)" />
+		</transition>
+		<transition on="cancel" to="showOrder" />
+	</view-state>
+
+    <decision-state id="checkDelivery">
+		<if test="pizzaFlowActions.checkIfDelivery(order)"
+			then="chooseDate" else="orderCreated" />
+	</decision-state>
+	
+	 <view-state id="chooseDate">		
+	    <on-entry>			
+			<evaluate expression="pizzaFlowActions.dateNotBefore()" result="viewScope.notBefore" />
+		</on-entry>	
+		<transition on="chosen" to="orderCreated">
+			<evaluate expression="order.setDateFor(requestParameters.delivery_day_time)" />			
+		</transition>		
+		<transition on="cancel" to="cancel" />
+	</view-state>
+	
+   <end-state id="cancel" />
+	
+	<end-state id="orderCreated" />
+</flow>

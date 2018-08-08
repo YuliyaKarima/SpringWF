@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="user.User" table="user">
+		<meta attribute="class-description">
+			This class contains the Orders details.
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="role" column="role_id"
+			unique="true" class="user.Role" not-null="true">
+		</many-to-one>	
+		
+		<property name="login" column="login" type="String" />
+		<property name="password" column="password"	type="String" />
+		<property name="created" column="created" type="date" />
+		<property name="closed" column="closed" type="date" />
+		<property name="status" column="status" type="String" />
+		
+	</class>	
+</hibernate-mapping>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="ingredient.Ingredient" table="ingredient">
+		<meta attribute="class-description">
+			This class contains the Customer details.
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<property name="country"          column="country"          type="string" />
+		<property name="dateOfProduction" column="dateOfProduction" />
+		<property name="shelfLife"        column="shelfLife"        type="int" />
+		<property name="cost"             column="cost"             type="double" />		
+		<property name="fat"              column="fat"              type="double" />
+		<property name="protein"          column="protein"          type="double" />
+		<property name="carbohydrate"     column="carbohydrate"     type="double" />
+		<property name="stockValue"       column="stockValue"       type="float" />
+		<component name="type" class="ingredient.ProductType">
+			<property name="name" type="string"/>
+			<property name="measure" type="string"/>
+			
+		</component>
+	</class>
+</hibernate-mapping>

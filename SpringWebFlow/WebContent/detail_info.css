@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+.details {
+  width: 200px;
+  border: solid 1px black; 
+  border-radius: 8px;
+}
+.check
+{
+    opacity:0.5;
+	color:#996;
+}
+.box{
+    margin-bottom:5px;
+}

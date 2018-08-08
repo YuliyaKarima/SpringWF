@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                    http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+	<view-state id="pizzasList">	
+     	<on-entry>			
+			<evaluate expression="pizzaFlowActions.getPizzasToCook()" result="viewScope.pizzas" />			
+		</on-entry>			
+        <transition on="sendToCook" to="cookProcess">
+			<evaluate expression="pizzaFlowActions.cookAll()" />			
+		</transition>	
+		<transition on="sendToCookSelected" to="cookProcess">
+			<evaluate expression="pizzaFlowActions.cookSelected(requestParameters.pizzas_to_cook)" />			
+		</transition>
+		<transition on="cancel" to="cancel" />
+	</view-state>
+
+   <view-state id="cookProcess">	
+     	<on-entry>			
+			<evaluate expression="pizzaFlowActions.getCookingPizzas()" result="viewScope.pizzas" />			
+		</on-entry>			
+        <transition on="cooked" to="cookProcess">
+			<evaluate expression="pizzaFlowActions.cooked(requestParameters.cooked_pizzas)" />		
+		</transition>			
+		<transition on="cancel" to="pizzasList" />
+	</view-state>
+	
+	<end-state id="cancel" />
+
+	<end-state id="bookedToOrder">
+	</end-state>
+
+	<end-state id="booked">
+	</end-state>
+
+	<global-transitions>
+		<transition on="cancel" to="cancel" />
+	</global-transitions>
+</flow>

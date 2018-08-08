@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:flow="http://www.springframework.org/schema/webflow-config"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow-config
+        http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+	<context:component-scan
+		base-package="controller" />
+
+	<context:annotation-config />
+
+	<mvc:annotation-driven />
+
+	<mvc:resources mapping="/resources/**"
+		location="/resources/css/" />
+	<mvc:resources mapping="/resources/**"
+		location="/resources/image/**" />
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/pages/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="500000" />
+	</bean>
+
+	<bean id="pricingEngine" class="pizza.PricingEngineImpl" />
+
+	<bean id="customerService" class="pizza.CustomerServiceImpl" />
+
+	<bean id="paymentProcessor" class="pizza.PaymentProcessor" />
+
+	<bean id="orderService" class="pizza.OrderServiceImpl" />
+
+	<bean id="order" class="pizza.Order" />
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/pizza_store" />
+		<property name="username" value="root" />
+		<property name="password" value="ZinedinZidan16!" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>customer-mapping.hbm.xml</value>
+				<value>pizza-mapping.hbm.xml</value>
+				<value>order-mapping.hbm.xml</value>
+				<value>payment-mapping.hbm.xml</value>
+				<value>table-mapping.hbm.xml</value>
+				<value>cooker-mapping.hbm.xml</value>
+				<value>ingredient-mapping.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="customerDao" class="dao.CustomerDao">
+		<property ref="sessionFactory" name="sessionFactory" />
+	</bean>
+
+	<bean id="hibernateTemplate"
+		class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="checkWriteOperations" value="false" />
+	</bean>
+
+	<security:http auto-config="true" use-expressions="true">
+		<security:intercept-url pattern="/admin/*"
+			access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/cooker/*"
+			access="hasRole('COOKER_ADMIN')" />
+		<security:form-login login-processing-url="/login"
+			login-page="/loginPage" username-parameter="username"
+			password-parameter="password" default-target-url="/admin/mypage"
+			authentication-failure-url="/loginPage?auth=fail" />
+		<security:logout logout-url="/logout"
+			logout-success-url="/logoutPage" />
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider
+			user-service-ref="userService">
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<security:user-service id="userService">
+		<security:user name="yulia" password="karima"
+			authorities="ROLE_USER,ROLE_ADMIN,COOKER_ADMIN" />
+		<security:user name="user" password="user"
+			authorities="ROLE_USER" />
+		<security:user name="admin" password="admin"
+			authorities="ROLE_ADMIN" />
+	</security:user-service>
+
+</beans>
